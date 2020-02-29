@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -15,10 +17,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_question_detail.*
+import kotlinx.android.synthetic.main.list_question_detail.*
 
 import java.util.HashMap
 
-class QuestionDetailActivity : AppCompatActivity() {
+class QuestionDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mQuestion: Question
     private lateinit var mAdapter: QuestionDetailListAdapter
@@ -67,6 +70,8 @@ class QuestionDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question_detail)
 
+        favoriteButton.setOnClickListener(this)
+
         // 渡ってきたQuestionのオブジェクトを保持する
         val extras = intent.extras
         mQuestion = extras.get("question") as Question
@@ -88,12 +93,31 @@ class QuestionDetailActivity : AppCompatActivity() {
                 startActivity(intent)
             } else {
                 // Questionを渡して回答作成画面を起動する
-                // TODO:
+                // --- ここから ---
+                val intent = Intent(applicationContext, AnswerSendActivity::class.java)
+                intent.putExtra("question", mQuestion)
+                startActivity(intent)
+                // --- ここまで ---
             }
         }
 
         val dataBaseReference = FirebaseDatabase.getInstance().reference
         mAnswerRef = dataBaseReference.child(ContentsPATH).child(mQuestion.genre.toString()).child(mQuestion.questionUid).child(AnswersPATH)
         mAnswerRef.addChildEventListener(mEventListener)
+    }
+
+    override fun onClick(v: View) {
+        if( v === favoriteButton){
+            val user = FirebaseAuth.getInstance().currentUser
+            if(user != null){
+                val dataBaseReference = FirebaseDatabase.getInstance().reference
+                val userID = FirebaseAuth.getInstance().currentUser!!.uid
+                val userRef = dataBaseReference.child(FavoritePATH).child(userID)
+                val data = HashMap<String, String>()
+                // UID
+                data["qid"] = mQuestion.questionUid
+                userRef.push().setValue(data,this)
+            }
+        }
     }
 }

@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
 
 class QuestionDetailListAdapter(context: Context, private val mQustion: Question) : BaseAdapter() {
     companion object {
@@ -61,6 +63,20 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
 
             val nameTextView = convertView.findViewById<View>(R.id.nameTextView) as TextView
             nameTextView.text = name
+
+            //課題1
+            val fbutton = convertView.findViewById<View>(R.id.favoriteButton) as Button
+            val user = FirebaseAuth.getInstance().currentUser
+            if(user == null)
+            {
+                 fbutton.setVisibility(View.INVISIBLE)
+
+            }
+            else{
+                fbutton.setVisibility(View.VISIBLE)
+                //fbutton.setBackgroundResource(R.drawable.btn);
+            }
+            //
 
             val bytes = mQustion.imageBytes
             if (bytes.isNotEmpty()) {

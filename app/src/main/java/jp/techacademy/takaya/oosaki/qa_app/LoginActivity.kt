@@ -19,7 +19,6 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
 
 import java.util.HashMap
-
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth

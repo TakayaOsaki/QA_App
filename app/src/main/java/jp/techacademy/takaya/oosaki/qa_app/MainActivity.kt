@@ -21,11 +21,17 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import android.util.Base64  //追加する
 import android.widget.ListView
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.list_questions.*
+import kotlinx.android.synthetic.main.list_question_detail.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var mToolbar: Toolbar
     private var mGenre = 0
+
+    private var favariteFlg = 0
+
 
     // --- ここから ---
     private lateinit var mDatabaseReference: DatabaseReference
@@ -113,6 +119,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         mToolbar = findViewById(R.id.toolbar)
         setSupportActionBar(mToolbar)
+
+//        favariteButton.setOnClickListener {
+//            if(favariteFlg == 0){
+//                favariteButton.setBackgroundResource(R.drawable.btn);
+//                favariteFlg = 1
+//            }
+//            else{
+//                favariteButton.setBackgroundResource(R.drawable.btn_pressed);
+//                favariteFlg = 0
+//            }
+//        }
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener { view ->
