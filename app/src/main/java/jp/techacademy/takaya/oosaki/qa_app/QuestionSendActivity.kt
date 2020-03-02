@@ -119,7 +119,7 @@ class QuestionSendActivity : AppCompatActivity(), View.OnClickListener, Database
 
             val dataBaseReference = FirebaseDatabase.getInstance().reference
             val genreRef = dataBaseReference.child(ContentsPATH).child(mGenre.toString())
-
+            //val genreRef = dataBaseReference.child(ContentsPATH).child("5")
             val data = HashMap<String, String>()
 
             // UID

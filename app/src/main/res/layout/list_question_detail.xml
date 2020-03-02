@@ -30,14 +30,15 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true" />
 
-    <Button
-        android:id="@+id/favoriteButton"
-        android:layout_width="50dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="4dp"
+<!--    <Button-->
+<!--        android:id="@+id/favoriteButton"-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_alignParentRight="true"-->
+<!--        android:layout_marginTop="4dp"-->
 
-        android:text="お気に入り"
-        android:textSize="8sp"
-        android:textColor="@color/colorButtonText"/>
+<!--        android:text="お気に入り"-->
+<!--        android:textSize="8sp"-->
+<!--        android:textColor="@color/colorButtonText"/>-->
+
 </RelativeLayout>

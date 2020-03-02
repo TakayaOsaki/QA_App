@@ -64,18 +64,18 @@ class QuestionDetailListAdapter(context: Context, private val mQustion: Question
             val nameTextView = convertView.findViewById<View>(R.id.nameTextView) as TextView
             nameTextView.text = name
 
-            //課題1
-            val fbutton = convertView.findViewById<View>(R.id.favoriteButton) as Button
-            val user = FirebaseAuth.getInstance().currentUser
-            if(user == null)
-            {
-                 fbutton.setVisibility(View.INVISIBLE)
-
-            }
-            else{
-                fbutton.setVisibility(View.VISIBLE)
-                //fbutton.setBackgroundResource(R.drawable.btn);
-            }
+//            //課題1
+//            val fbutton = convertView.findViewById<View>(R.id.favoriteButton) as Button
+//            val user = FirebaseAuth.getInstance().currentUser
+//            if(user == null)
+//            {
+//                 fbutton.setVisibility(View.INVISIBLE)
+//
+//            }
+//            else{
+//                fbutton.setVisibility(View.VISIBLE)
+//                //fbutton.setBackgroundResource(R.drawable.btn);
+//            }
             //
 
             val bytes = mQustion.imageBytes
