@@ -26,7 +26,7 @@ import android.support.v4.app.SupportActivity.ExtraData
 import android.support.v4.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.R.attr.name
-
+import android.media.ExifInterface
 
 
 class QuestionDetailActivity : AppCompatActivity(), View.OnClickListener {
@@ -35,6 +35,7 @@ class QuestionDetailActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var mAdapter: QuestionDetailListAdapter
     private lateinit var mAnswerRef: DatabaseReference
     private lateinit var mFavoriteRef: DatabaseReference
+    private var ExistFlg = 0
 
     private val mEventListener = object : ChildEventListener {
         override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
@@ -48,7 +49,6 @@ class QuestionDetailActivity : AppCompatActivity(), View.OnClickListener {
                     return
                 }
             }
-
             val body = map["body"] ?: ""
             val name = map["name"] ?: ""
             val uid = map["uid"] ?: ""
@@ -59,28 +59,37 @@ class QuestionDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
-
         }
-
+        override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+        }
+        override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+        }
+    }
+    val fEventListener = object : ChildEventListener {
+        override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+            ExistFlg = 1
+            favoriteButton.setBackgroundResource(R.drawable.btn);
+        }
+        override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
+        }
         override fun onChildRemoved(dataSnapshot: DataSnapshot) {
 
         }
-
         override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {
 
         }
-
         override fun onCancelled(databaseError: DatabaseError) {
-
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question_detail)
 
         favoriteButton.setOnClickListener(this)
+        ExistFlg = 0
 
         // 渡ってきたQuestionのオブジェクトを保持する
         val extras = intent.extras
@@ -93,19 +102,6 @@ class QuestionDetailActivity : AppCompatActivity(), View.OnClickListener {
         listView.adapter = mAdapter
         mAdapter.notifyDataSetChanged()
 
-        //課題1
-
-        val user = FirebaseAuth.getInstance().currentUser
-        if(user == null)
-        {
-            favoriteButton.setVisibility(View.INVISIBLE)
-
-        }
-        else{
-            favoriteButton.setVisibility(View.VISIBLE)
-            //fbutton.setBackgroundResource(R.drawable.btn);
-        }
-        //
         fab.setOnClickListener {
             // ログイン済みのユーザーを取得する
             val user = FirebaseAuth.getInstance().currentUser
@@ -128,70 +124,37 @@ class QuestionDetailActivity : AppCompatActivity(), View.OnClickListener {
         mAnswerRef = dataBaseReference.child(ContentsPATH).child(mQuestion.genre.toString()).child(mQuestion.questionUid).child(AnswersPATH)
         mAnswerRef.addChildEventListener(mEventListener)
 
-
-
+        //お気に入り
+        val user = FirebaseAuth.getInstance().currentUser
+        if(user == null)
+        {
+            favoriteButton.setVisibility(View.INVISIBLE)
+        }
+        else{
+            favoriteButton.setVisibility(View.VISIBLE)
+            favoriteButton.setBackgroundResource(R.drawable.btn_pressed);
+        }
+        //
+        val fuser = FirebaseAuth.getInstance().currentUser
+        if(fuser != null) {
+            val fdataBaseReference = FirebaseDatabase.getInstance().reference
+            val userID = FirebaseAuth.getInstance().currentUser!!.uid
+            mFavoriteRef = fdataBaseReference.child(FavoritePATH).child(userID).child(mQuestion.questionUid)
+            mFavoriteRef.addChildEventListener(fEventListener)
+        }
     }
 
     override fun onClick(v: View) {
         if( v == favoriteButton){
-            val user = FirebaseAuth.getInstance().currentUser
-            if(user != null){
-                val myRef: DatabaseReference
-                val dataBaseReference = FirebaseDatabase.getInstance().reference
-                val userID = FirebaseAuth.getInstance().currentUser!!.uid
-                mFavoriteRef = dataBaseReference.child(FavoritePATH).child(userID).child(mQuestion.questionUid)
-
-                 val fEventListener = object : ChildEventListener {
-                    override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-
-                        val test = 1
-                        //val map = dataSnapshot.value as Map<String, String>
-
-
-                    }
-
-                    override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
-
-                    }
-
-                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-
-                    }
-
-                    override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {
-
-                    }
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-
-                    }
-                }
-
-                mFavoriteRef.addChildEventListener(fEventListener)
-//                userRef.addChildEventListener(mEventListener)
-//                userRef.addListenerForSingleValueEvent(object : ValueEventListener {
-//                    override fun onDataChange(snapshot: DataSnapshot) {
-//                        val qdata = snapshot.value as Map<String, String>?
-//                        val dataLen = qdata?.size
-//                        if(dataLen != null){
-//                            qidFlg = 0
-//                            for(id in qdata.keys){
-//                                val tmp = qdata[id] as Map<String, String>
-//                                if(tmp["qid"] == mQuestion.questionUid){
-//                                   qidFlg = 1
-//                                    break
-//                                }
-//                            }
-//                        }
-//                    }
-//                    override fun onCancelled(firebaseError: DatabaseError) {}
-//                })
-
-//                val data = HashMap<String, String>()
-//                // Genre
-//                data["genre"] = mQuestion.genre.toString()
-//                //val genreRef = dataBaseReference.child(FavoritePATH).child("5")
-//                mFavoriteRef.setValue(data)
+            if(ExistFlg == 1){
+                mFavoriteRef.removeValue()
+                ExistFlg = 0
+                favoriteButton.setBackgroundResource(R.drawable.btn_pressed);
+            }
+            else{
+                val data = HashMap<String, String>()
+                data["genre"] = mQuestion.genre.toString()
+                mFavoriteRef.setValue(data)
             }
         }
     }

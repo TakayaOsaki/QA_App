@@ -20,10 +20,10 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import android.util.Base64  //追加する
+import android.view.View
 import android.widget.ListView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.list_questions.*
-import kotlinx.android.synthetic.main.list_question_detail.*
+import kotlinx.android.synthetic.main.activity_question_detail.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -118,6 +118,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         mToolbar = findViewById(R.id.toolbar)
         setSupportActionBar(mToolbar)
+
 
 //        favariteButton.setOnClickListener {
 //            if(favariteFlg == 0){
@@ -224,6 +225,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else if (id == R.id.nav_compter) {
             mToolbar.title = "コンピューター"
             mGenre = 4
+        } else if (id == R.id.nav_favorite) {
+            mToolbar.title = "お気に入り"
+
         }
 
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)

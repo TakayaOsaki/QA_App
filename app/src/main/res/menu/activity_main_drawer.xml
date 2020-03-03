@@ -15,4 +15,10 @@
             android:id="@+id/nav_compter"
             android:title="コンピューター"/>
     </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_favorite"
+            android:title="お気に入り"/>
+
+    </group>
 </menu>
