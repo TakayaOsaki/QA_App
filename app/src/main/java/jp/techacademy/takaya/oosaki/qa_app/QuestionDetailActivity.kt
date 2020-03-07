@@ -144,6 +144,28 @@ class QuestionDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        //お気に入り
+        val user = FirebaseAuth.getInstance().currentUser
+        if(user == null)
+        {
+            favoriteButton.setVisibility(View.INVISIBLE)
+        }
+        else{
+            favoriteButton.setVisibility(View.VISIBLE)
+            favoriteButton.setBackgroundResource(R.drawable.btn_pressed);
+        }
+        val fuser = FirebaseAuth.getInstance().currentUser
+        if(fuser != null) {
+            val fdataBaseReference = FirebaseDatabase.getInstance().reference
+            val userID = FirebaseAuth.getInstance().currentUser!!.uid
+            mFavoriteRef = fdataBaseReference.child(FavoritePATH).child(userID).child(mQuestion.questionUid)
+            mFavoriteRef.addChildEventListener(fEventListener)
+        }
+        //
+    }
+
     override fun onClick(v: View) {
         if( v == favoriteButton){
             if(ExistFlg == 1){

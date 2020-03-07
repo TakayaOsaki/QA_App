@@ -98,17 +98,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
-
         override fun onChildRemoved(p0: DataSnapshot) {
-
         }
-
         override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-
         }
-
         override fun onCancelled(p0: DatabaseError) {
-
         }
     }
     // --- ここまで追加する ---
@@ -118,18 +112,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         mToolbar = findViewById(R.id.toolbar)
         setSupportActionBar(mToolbar)
-
-
-//        favariteButton.setOnClickListener {
-//            if(favariteFlg == 0){
-//                favariteButton.setBackgroundResource(R.drawable.btn);
-//                favariteFlg = 1
-//            }
-//            else{
-//                favariteButton.setBackgroundResource(R.drawable.btn_pressed);
-//                favariteFlg = 0
-//            }
-//        }
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener { view ->
@@ -190,6 +172,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if(mGenre == 0) {
             onNavigationItemSelected(navigationView.menu.getItem(0))
         }
+        val user = FirebaseAuth.getInstance().currentUser
+        if(user == null){
+            navigationView.menu.findItem(R.id.nav_favorite).isVisible = false
+        }
+        else{
+            navigationView.menu.findItem(R.id.nav_favorite).isVisible = true
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -226,8 +216,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             mToolbar.title = "コンピューター"
             mGenre = 4
         } else if (id == R.id.nav_favorite) {
-            mToolbar.title = "お気に入り"
-
+            //mToolbar.title = "お気に入り"
+            val intent = Intent(applicationContext, FavoriteActivity::class.java)
+            startActivity(intent)
         }
 
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
